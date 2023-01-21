@@ -11,6 +11,7 @@ def slider(
     xdata,
     lambdify_kws=None,
     plot_kws=None,
+    use_latex=False,
 ):
     """Parameters
     ----------
@@ -22,10 +23,12 @@ def slider(
         syntax is {symbol : (init, start, stop)}
     xdata : numpy.ndarray
         X data to plot
-    lambdify_kws : dict
-        keyword arguments to be passed to sympy.lambdify
-    plot_kws : dict
-        keyword arguments to be passed to matplotlib.plot
+    lambdify_kws : dict, optional
+        Keyword arguments to be passed to sympy.lambdify
+    plot_kws : dict, optional
+        Keyword arguments to be passed to matplotlib.plot
+    use_latex : bool, optional
+        Default is `False`
 
     Returns
     -------
@@ -54,9 +57,13 @@ def slider(
     param_sliders = {}
     for i, (k, v) in enumerate(params.items()):
         axfreq = plt.axes([0.25, 0.1+i*0.04, 0.65, 0.03])
+        if use_latex:
+            label = '$'+str(k)+'$'
+        else:
+            label = str(k)
         param_sliders[k] = Slider(
             ax=axfreq,
-            label='$'+str(k)+'$',
+            label=label,
             valmin=v[1],
             valmax=v[2],
             valinit=v[0],

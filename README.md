@@ -34,5 +34,6 @@ params = slider(
         color='blue',
         linestyle='--',
     ),
+    use_latex=True,
 )
 ```
