@@ -1,5 +1,6 @@
+demo.py
 venv/
-*.pyc
 build/
 dist/
 *.egg-info
+*.pyc
