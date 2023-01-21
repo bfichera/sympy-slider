@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
 
 setuptools.setup(
     name='sympy-slider',
-    version='0.0.1',
+    version='0.0.2',
     author='Bryan Fichera',
     author_email='bfichera@mit.edu',
     description='Make slider from sympy expression and params',
