@@ -1,22 +1,26 @@
 from matplotlib.widgets import Slider, Button
 import matplotlib.pyplot as plt
 import sympy as sp
+from numpy import vectorize
 
 
 def slider(
     expr,
-    params,
     x,
+    params,
+    xdata,
     lambdify_kws=None,
     plot_kws=None,
 ):
     """Parameters
     ----------
-    expr: sympy.Expr
+    expr : sympy.Expr
+    x : sympy.Symbol
+        Independent variable to plot
     params : dict
         `sympy.Symbol`s to manipulate over.
         syntax is {symbol : (init, start, stop)}
-    x : numpy.ndarray
+    xdata : numpy.ndarray
         X data to plot
     lambdify_kws : dict
         keyword arguments to be passed to sympy.lambdify
@@ -32,12 +36,13 @@ def slider(
         plot_kws = {}
 
     # Create the function we will manipulate
-    fcn = sp.lambdify((params.keys), expr, **lambdify_kws)
+    fcn = sp.lambdify((x, (params.keys())), expr, **lambdify_kws)
+    fcn = vectorize(fcn, excluded=[1])
     init_vals = {k: v[0] for k, v in params.items()}
 
     # Create the figure and the line that we will manipulate
     fig, ax = plt.subplots()
-    line, = ax.plot(x, fcn(*init_vals.values()))
+    line, = ax.plot(xdata, fcn(xdata, init_vals.values()))
 
     # adjust the main plot to make room for the sliders
     num_vary_params = len(params)
@@ -56,12 +61,12 @@ def slider(
         )
 
     # The function to be called anytime a slider's value changes
-    init_min = min(fcn(*init_vals.values))
-    init_max = max(fcn(*init_vals.values))
+    init_min = min(fcn(xdata, init_vals.values()))
+    init_max = max(fcn(xdata, init_vals.values()))
 
     def update(val):
         vals = tuple(param_sliders[k].val for k in params.keys())
-        ydata = fcn(*vals)
+        ydata = fcn(xdata, vals)
         old_bottom, old_top = ax.get_ylim()
         line.set_ydata(
             ydata,
@@ -88,7 +93,7 @@ def slider(
 
     def reset_axes(event):
         vals = tuple(param_sliders[k].val for k in params.keys())
-        ydata = fcn(*vals)
+        ydata = fcn(xdata, vals)
         ax.set_ylim(bottom=min(ydata), top=max(ydata))
     button.on_clicked(reset)
     button2.on_clicked(reset_axes)
