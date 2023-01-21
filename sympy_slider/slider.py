@@ -34,6 +34,8 @@ def slider(
     """
     if plot_kws is None:
         plot_kws = {}
+    if lambdify_kws is None:
+        lambdify_kws = {}
 
     # Create the function we will manipulate
     fcn = sp.lambdify((x, (params.keys())), expr, **lambdify_kws)
