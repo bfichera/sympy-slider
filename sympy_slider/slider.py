@@ -113,7 +113,6 @@ def slider(
 
 def func_slider(
     func,
-    x,
     params,
     xdata,
     lambdify_kws=None,
@@ -126,8 +125,7 @@ def func_slider(
     x : sympy.Symbol
         Independent variable to plot
     params : dict
-        `sympy.Symbol`s to manipulate over.
-        syntax is {symbol : (init, start, stop)}
+        syntax is {str: (init, start, stop)}
     xdata : numpy.ndarray
         X data to plot
     lambdify_kws : dict, optional
@@ -148,7 +146,8 @@ def func_slider(
         lambdify_kws = {}
 
     # Create the function we will manipulate
-    fcn = func
+    def fcn(*args):
+        return func(args[0], *args[1])
     fcn = vectorize(fcn, excluded=[1])
     init_vals = {k: v[0] for k, v in params.items()}
 
